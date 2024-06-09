@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login dan Pengatur Suplier</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="login-section">
+        <h2>Login</h2>
+        <form id="login-form">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+      <div id="admin-menu-section" style="display: none">
+        <h2>Menu Admin</h2>
+        <button id="manage-suppliers-admin">Pengatur Suplier</button>
+        <button id="master-data-admin">Data Master</button>
+        <button id="transactions-admin">Transaksi</button>
+        <button id="reports-admin">Laporan</button>
+        <button id="admin-logout">Logout</button>
+      </div>
+
+      <div id="manager-menu-section" style="display: none">
+        <h2>Menu Manager</h2>
+        <button id="view-suppliers-manager">Lihat Suplier</button>
+        <button id="manager-logout">Logout</button>
+      </div>
+
+      <div id="supplier-section" style="display: none">
+        <h2>Pengatur Suplier</h2>
+        <form id="supplier-form">
+          <label for="supplier-name">Nama Suplier:</label>
+          <input type="text" id="supplier-name" name="supplier-name" required />
+          <label for="supplier-address">Alamat:</label>
+          <input
+            type="text"
+            id="supplier-address"
+            name="supplier-address"
+            required
+          />
+          <button type="submit">Tambah Suplier</button>
+        </form>
+        <h3>Daftar Suplier</h3>
+        <ul id="supplier-list"></ul>
+        <button id="back-to-admin-menu">Kembali ke Menu Admin</button>
+      </div>
+
+      <div id="view-supplier-section" style="display: none">
+        <h2>Daftar Suplier</h2>
+        <ul id="view-supplier-list"></ul>
+        <button id="back-to-manager-menu">Kembali ke Menu Manager</button>
+      </div>
+
+      <!-- untuk master data -->
+      <div id="master-data-section" style="display: none">
+        <h2>Master Data</h2>
+        <form id="item-form">
+          <label for="item-name">Nama Barang:</label>
+          <input type="text" id="item-name" required /><br />
+          <label for="item-type">Jenis Barang:</label>
+          <input type="text" id="item-type" required /><br />
+          <label for="item-unit">Satuan Barang:</label>
+          <input type="text" id="item-unit" required /><br />
+          <button type="submit">Tambah Barang</button>
+        </form>
+        <h3>Daftar Barang</h3>
+        <ul id="item-list"></ul>
+        <button id="back-to-admin-menu-from-master">
+          Kembali ke Menu Admin
+        </button>
+      </div>
+
+      <!-- untuk transaksi -->
+      <div id="transactions-section" style="display: none">
+        <h2>Transaksi</h2>
+        <form id="transaction-form">
+          <label for="transaction-type">Jenis Transaksi:</label>
+          <select id="transaction-type" required>
+            <option value="in">Barang Masuk</option>
+            <option value="out">Barang Keluar</option></select
+          ><br />
+          <label for="transaction-item">Nama Barang:</label>
+          <input type="text" id="transaction-item" required /><br />
+          <label for="transaction-quantity">Jumlah:</label>
+          <input type="number" id="transaction-quantity" required /><br />
+          <button type="submit">Tambah Transaksi</button>
+        </form>
+        <h3>Daftar Transaksi</h3>
+        <ul id="transaction-list"></ul>
+        <button id="back-to-admin-menu-from-transactions">
+          Kembali ke Menu Admin
+        </button>
+      </div>
+
+      <!-- Reports Section -->
+  <div id="reports-section" style="display: none;">
+  <h2>Laporan</h2>
+  <button id="inbound-report">Laporan Barang Masuk</button>
+  <button id="outbound-report">Laporan Barang Keluar</button>
+  <button id="warehouse-stock-report">Laporan Stok Gudang</button>
+  <button id="supplier-report">Laporan Supplier</button>
+  <div id="report-display"></div>
+  <button id="back-to-admin-menu-from-reports">Kembali ke Menu Admin</button>
+</div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
