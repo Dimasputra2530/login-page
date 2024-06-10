@@ -73,11 +73,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Event listener untuk tombol "Manage Suppliers" oleh admin
-  manageSuppliersAdminButton.addEventListener("click", function () {
+  // Event listener untuk tombol "Laporan" oleh admin
+  reportsAdminButton.addEventListener("click", function () {
     adminMenuSection.style.display = "none";
-    supplierSection.style.display = "block";
-    loadSuppliers(supplierList, true); // true indicates admin view
+    reportsSection.style.display = "block";
+  });
+
+  // Event listener untuk tombol "Kembali ke Menu Admin" dari bagian Laporan
+  backToAdminMenuFromReportsButton.addEventListener("click", function () {
+    reportsSection.style.display = "none";
+    adminMenuSection.style.display = "block";
   });
 
   // Event listener untuk tombol "View Suppliers" oleh manager
@@ -100,6 +105,66 @@ document.addEventListener("DOMContentLoaded", function () {
     transactionsSection.style.display = "block";
     loadTransactions(transactionList);
   });
+
+  // Event listener untuk tombol "Laporan Barang Masuk"
+  document
+    .getElementById("inbound-report")
+    .addEventListener("click", function () {
+      const inboundReport = generateInboundReport(transactions);
+      displayReport(inboundReport);
+    });
+
+  // Event listener untuk tombol "Laporan Barang Keluar"
+  document
+    .getElementById("outbound-report")
+    .addEventListener("click", function () {
+      const outboundReport = generateOutboundReport(transactions);
+      displayReport(outboundReport);
+    });
+
+  // Event listener untuk tombol "Laporan Stok Gudang"
+  document
+    .getElementById("warehouse-stock-report")
+    .addEventListener("click", function () {
+      const warehouseStockReport = generateWarehouseStockReport(
+        items,
+        transactions
+      );
+      displayReport(warehouseStockReport);
+    });
+
+  // Event listener untuk tombol "Laporan Pemasok"
+  document
+    .getElementById("supplier-report")
+    .addEventListener("click", function () {
+      const supplierReport = generateSupplierReport(suppliers);
+      displayReport(supplierReport);
+    });
+
+  // Fungsi untuk memuat daftar transaksi
+  function loadTransactions(listElement) {
+    listElement.innerHTML = "";
+    transactions.forEach((transaction, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${transaction.type === "in" ? "Masuk" : "Keluar"} - ${
+        transaction.item
+      } - ${transaction.quantity}`;
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Hapus";
+      deleteButton.addEventListener("click", function () {
+        deleteTransaction(index);
+      });
+      li.appendChild(deleteButton);
+      listElement.appendChild(li);
+    });
+  }
+
+  // Fungsi untuk menghapus transaksi dari daftar
+  function deleteTransaction(index) {
+    transactions.splice(index, 1);
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+    loadTransactions(transactionList); // Refresh the list
+  }
 
   // Event listener untuk tombol "Back" dan "Logout"
   backToAdminMenuButton.addEventListener("click", function () {
@@ -177,96 +242,6 @@ document.addEventListener("DOMContentLoaded", function () {
     loadTransactions(transactionList);
     transactionForm.reset();
   });
-  // Event listener untuk tombol "Laporan Barang Masuk"
-  document
-    .getElementById("inbound-report")
-    .addEventListener("click", function () {
-      const inboundReport = generateInboundReport(transactions);
-      displayReport(inboundReport);
-    });
-
-  // Event listener untuk tombol "Laporan Barang Keluar"
-  document
-    .getElementById("outbound-report")
-    .addEventListener("click", function () {
-      const outboundReport = generateOutboundReport(transactions);
-      displayReport(outboundReport);
-    });
-
-  // Event listener untuk tombol "Laporan Stok Gudang"
-  document
-    .getElementById("warehouse-stock-report")
-    .addEventListener("click", function () {
-      const warehouseStockReport = generateWarehouseStockReport(
-        items,
-        transactions
-      );
-      displayReport(warehouseStockReport);
-    });
-
-  // Event listener untuk tombol "Laporan Supplier"
-  document
-    .getElementById("supplier-report")
-    .addEventListener("click", function () {
-      const supplierReport = generateSupplierReport(suppliers);
-      displayReport(supplierReport);
-    });
-
-  // Fungsi untuk menghasilkan laporan barang masuk
-  function generateInboundReport(transactions) {
-    const inboundTransactions = transactions.filter(
-      (transaction) => transaction.type === "in"
-    );
-    return inboundTransactions;
-  }
-
-  // Fungsi untuk menghasilkan laporan barang keluar
-  function generateOutboundReport(transactions) {
-    const outboundTransactions = transactions.filter(
-      (transaction) => transaction.type === "out"
-    );
-    return outboundTransactions;
-  }
-
-  // Fungsi untuk menghasilkan laporan stok gudang
-  function generateWarehouseStockReport(items, transactions) {
-    const stockReport = {};
-    items.forEach((item) => {
-      stockReport[item.name] = 0;
-    });
-    transactions.forEach((transaction) => {
-      if (transaction.type === "in") {
-        stockReport[transaction.item] += transaction.quantity;
-      } else {
-        stockReport[transaction.item] -= transaction.quantity;
-      }
-    });
-    return stockReport;
-  }
-
-  // Fungsi untuk menghasilkan laporan supplier
-  function generateSupplierReport(suppliers) {
-    return suppliers;
-  }
-
-  // Fungsi untuk menampilkan laporan
-  function displayReport(report) {
-    const reportDisplay = document.getElementById("report-display");
-    reportDisplay.innerHTML = ""; // Bersihkan laporan sebelum menampilkan yang baru
-    if (Array.isArray(report)) {
-      report.forEach((item) => {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${item.name} - ${item.address}`;
-        reportDisplay.appendChild(listItem);
-      });
-    } else {
-      for (const key in report) {
-        const listItem = document.createElement("li");
-        listItem.textContent = `${key}: ${report[key]}`;
-        reportDisplay.appendChild(listItem);
-      }
-    }
-  }
 
   // Fungsi untuk memuat daftar pemasok dengan opsi untuk menghapus
   function loadSuppliers(listElement, isAdmin) {
@@ -340,5 +315,43 @@ document.addEventListener("DOMContentLoaded", function () {
     transactions.splice(index, 1);
     localStorage.setItem("transactions", JSON.stringify(transactions));
     loadTransactions(transactionList); // Refresh the list
+  }
+
+  // Fungsi untuk menghasilkan laporan barang masuk
+  function generateInboundReport(transactions) {
+    return transactions.filter((transaction) => transaction.type === "in");
+  }
+
+  // Fungsi untuk menghasilkan laporan barang keluar
+  function generateOutboundReport(transactions) {
+    return transactions.filter((transaction) => transaction.type === "out");
+  }
+
+  // Fungsi untuk menghasilkan laporan stok gudang
+  function generateWarehouseStockReport(items, transactions) {
+    let stock = items.map((item) => ({
+      ...item,
+      stock: transactions
+        .filter((transaction) => transaction.item === item.name)
+        .reduce((total, transaction) => {
+          return transaction.type === "in"
+            ? total + transaction.quantity
+            : total - transaction.quantity;
+        }, 0),
+    }));
+    return stock;
+  }
+
+  // Fungsi untuk menghasilkan laporan pemasok
+  function generateSupplierReport(suppliers) {
+    return suppliers;
+  }
+
+  // Fungsi untuk menampilkan laporan
+  function displayReport(report) {
+    const reportSection = document.getElementById("report-section");
+    const reportContent = document.getElementById("report-content");
+    reportSection.style.display = "block";
+    reportContent.innerHTML = JSON.stringify(report, null, 2);
   }
 });
